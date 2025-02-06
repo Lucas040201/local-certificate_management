@@ -1,4 +1,9 @@
-<section id="local-certificate_management-{{uniqid}}" class="container">
+<section
+    id="local-certificate_management-{{uniqid}}"
+    class="container"
+    data-limit="30"
+    data-page="1"
+>
     <h3 class="pb-3">
         {{#str}} courses, local_certificate_management {{/str}}
     </h3>
@@ -7,16 +12,16 @@
             <div class="row">
                 <div class="col-12 col-md-3">
                     <div class="form-group">
-                        <label for="search-param">Procurar:</label>
+                        <label for="search-param">{{#str}} search, local_certificate_management {{/str}}</label>
                         <input type="text" id="search-param" class="form-control search-param">
                     </div>
                 </div>
                 <div class="col-12 col-md-3">
                     <div class="form-group">
-                        <label for="order-param">Ordenar:</label>
+                        <label for="order-param">{{#str}} sort, local_certificate_management {{/str}}</label>
                         <select name="order-param" id="order-param" class="order-param form-control">
-                            <option value="ASC">Crescente</option>
-                            <option value="DESC">Descrescente</option>
+                            <option value="ASC">{{#str}} sort_asc, local_certificate_management {{/str}}</option>
+                            <option value="DESC">{{#str}} sort_desc, local_certificate_management {{/str}}</option>
                         </select>
                     </div>
                 </div>
@@ -25,16 +30,18 @@
                 </div>
             </div>
         </div>
-        <table>
+        <table class="table table-striped">
             <thead>
-                <th>Short Name</th>
-                <th>Course Name</th>
-                <th>Enrolled Users</th>
+                <th scope="col">#</th>
+                <th scope="col">{{#str}} course_thead_short_name, local_certificate_management {{/str}}</th>
+                <th scope="col">{{#str}} course_thead_name, local_certificate_management {{/str}}</th>
+                <th scope="col">{{#str}} course_thead_enrolled_users, local_certificate_management {{/str}}</th>
             </thead>
             <tbody class="courses-content">
             </tbody>
         </table>
     </div>
+    {{> local_certificate_management/components/common/btn-see-more }}
 </section>
 
 {{#js}}

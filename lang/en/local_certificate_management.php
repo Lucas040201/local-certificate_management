@@ -26,5 +26,13 @@
 $string['pluginname'] = 'Certificate Management';
 $string['managecertificates'] = 'Certificate Management';
 $string['courses'] = 'Courses List';
-
-
+$string['search'] = 'Search:';
+$string['sort'] = 'Sort:';
+$string['sort_asc'] = 'ASC';
+$string['sort_desc'] = 'DESC';
+$string['course_table_empty'] = 'There are no courses.';
+$string['course_table_not_found'] = 'No courses found with the given parameters.';
+$string['course_thead_short_name'] = 'Short Name';
+$string['course_thead_name'] = 'Course Name';
+$string['course_thead_enrolled_users'] = 'Enrolled Users';
+$string['button_see_more'] = 'See More';

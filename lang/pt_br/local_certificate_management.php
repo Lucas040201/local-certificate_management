@@ -26,3 +26,13 @@
 $string['pluginname'] = 'Gerenciador de Certificados';
 $string['managecertificates'] = 'Gerenciador de Certificados';
 $string['courses'] = 'Listagem de Cursos';
+$string['search'] = 'Pesquisar:';
+$string['sort'] = 'Ordem:';
+$string['sort_asc'] = 'Crescente';
+$string['sort_desc'] = 'Decrescente';
+$string['course_table_empty'] = 'Não há cursos.';
+$string['course_table_not_found'] = 'Nenhum curso encontrado com os paramentros fornecidos.';
+$string['course_thead_short_name'] = 'Nome curto';
+$string['course_thead_name'] = 'Nome do Curso';
+$string['course_thead_enrolled_users'] = 'Usuários matriculados';
+$string['button_see_more'] = 'Mostrar mais';

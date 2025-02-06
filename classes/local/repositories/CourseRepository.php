@@ -38,17 +38,21 @@ class CourseRepository extends BaseRepository
         RetrieveCoursesParam $params
     ): array
     {
-        $sql = "select * from {{$this->table}} WHERE format != 'site'";
+        $sqlEnrolledUsers = "(select count(*) from {user_enrolments} mue inner join {enrol} me on mue.enrolid = me.id where me.courseid = mc.id)";
+        $sql = "select mc.id, mc.shortname as short_name, mc.fullname, {$sqlEnrolledUsers} as enrolled_users from {{$this->table}} as mc WHERE mc.format != 'site'";
+        $sqlCount = "select count(*) from {{$this->table}} mc WHERE mc.format != 'site'";
 
         $queryParams = [];
-        if (!empty($params->search)) {
-            $sql .= " AND ({$this->builder->sql_like('fullname', ':search)}')} OR {$this->builder->sql_like('shortname', ':search')}";
-            $sql .= "OR id = :search)";
-            $queryParams['search'] = "%{$this->builder->sql_like_escape(strtolower($params->search))}%";
+        if (!is_null($params->search)) {
+            $whereSearch = " AND (mc.fullname LIKE :search1 OR mc.shortname LIKE :search2)";
+            $sql .= $whereSearch;
+            $sqlCount .= $whereSearch;
+            $queryParams['search1'] = "%{$this->builder->sql_like_escape(strtolower($params->search))}%";
+            $queryParams['search2'] = "%{$this->builder->sql_like_escape(strtolower($params->search))}%";
         }
 
-        $sql .= "ORDER BY id {$params->sort}";
+        $sql .= " ORDER BY mc.id {$params->sort}";
 
-        return array_values($this->builder->get_records_sql($sql, $queryParams, $params->offset, $params->limit));
+        return [array_values($this->builder->get_records_sql($sql, $queryParams, $params->offset, $params->limit)), $this->builder->count_records_sql($sqlCount, $queryParams)];
     }
 }
