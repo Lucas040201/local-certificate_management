@@ -29,11 +29,6 @@ use local_certificate_management\output\courses;
 
 class course extends base_page
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     protected function setPageToRender(): void
     {
         $this->pageToRender = new courses();
@@ -47,5 +42,10 @@ class course extends base_page
     protected function canSeePage(): bool
     {
         return true;
+    }
+
+    protected function setParams()
+    {
+        return;
     }
 }

@@ -26,11 +26,12 @@ namespace local_certificate_management\local\repositories\params;
 
 use local_certificate_management\local\utils\MagicMethods;
 
-class RetrieveCoursesParam
+class RetrieveUsersParam
 {
     use MagicMethods;
 
     public function __construct(
+        protected int $courseId,
         protected string $search = '',
         protected int $limit = 10,
         protected int $offset = 0,

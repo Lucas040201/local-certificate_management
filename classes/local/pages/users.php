@@ -22,36 +22,39 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-namespace local_certificate_management\output;
+namespace local_certificate_management\local\pages;
 
-use core\output\templatable;
-use core\output\plugin_renderer_base;
-use stdClass;
+use Exception;
+use RuntimeException;
+use local_certificate_management\output\users as users_output;
 
-class renderer extends plugin_renderer_base
+class users extends base_page
 {
-
-    public function render_pages(
-        string $pageName,
-        templatable $template,
-        array $params = []
-    )
+    protected function setPageToRender(): void
     {
-        $templateName = "local_certificate_management/page/$pageName";
-        return $this->$pageName($template, $templateName, $params);
-    }
-    public function courses(courses $courses, string $templateName, array $params = []): bool|string
-    {
-        return $this->render_from_template($templateName, array_merge($this->getContext($courses), $params));
+        $this->pageToRender = new users_output();
     }
 
-    public function users(users $users, string $templateName, $params = []): bool|string
+    protected function setPageName(): void
     {
-        return $this->render_from_template($templateName, array_merge($this->getContext($users), $params));
+        $this->pageName = 'users';
     }
 
-    private function getContext(templatable $template): array
+    protected function canSeePage(): bool
     {
-        return $template->export_for_template($this);
+        try {
+            get_course($this->params['id']);
+        } catch (Exception $exception) {
+            throw new RuntimeException(get_string('course_not_found', 'local_certificate_management'));
+        }
+
+        return true;
+    }
+
+    protected function setParams()
+    {
+        $id = required_param('id', PARAM_INT);
+        $this->params['id'] = $id;
+        $this->paramsToTemplate['courseid'] = $id;
     }
 }

@@ -24,45 +24,54 @@
 
 namespace local_certificate_management\local\services;
 
-use local_certificate_management\local\repositories\CourseRepository;
-use local_certificate_management\local\repositories\params\RetrieveCoursesParam;
+use core_completion\progress;
+use local_certificate_management\local\repositories\UsersRepository;
+use local_certificate_management\local\repositories\params\RetrieveUsersParam;
 
-class CourseService
+class UsersService
 {
-    private static ?CourseService $service = null;
-    private CourseRepository $repository;
+    private static ?UsersService $service = null;
+    private UsersRepository $repository;
 
     public function __construct()
     {
-        $this->repository = new CourseRepository();
+        $this->repository = new UsersRepository();
     }
 
-    public function retrieveCourse(
+    public function retrieveUsers(
+        int $courseId,
         string $search = '',
         string $sort = 'ASC',
         int $page = 1,
         int $limit = 30
     )
     {
+        $course = get_course($courseId);
+
         $offset = ($page - 1) * $limit;
-        $param = new RetrieveCoursesParam(
+        $param = new RetrieveUsersParam(
+            $courseId,
             $search,
             $limit,
             $offset,
             $sort
         );
 
-        list($courses, $count) = $this->repository->retrieveCourses($param);
+        list($users, $count) = $this->repository->retrieveUsers($param);
 
         return [
             'page' => $page,
             'total' => $count,
-            'courses' => $courses,
-        ];
+            'users' => array_map(function ($user) use ($course) {
+                $progress = (int) progress::get_course_progress_percentage($course, $user->id) ?? 0;
+                $user->progress = $progress . '%';
+                return $user;
+            }, $users),
+        ];;
     }
 
 
-    public static function getService(): CourseService
+    public static function getService(): UsersService
     {
         if (self::$service === null) {
             self::$service = new self();

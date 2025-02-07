@@ -1,8 +1,8 @@
 {{#courses}}
     <tr class="courses-item">
-        <th scope="row">{{id}}</th>
-        <td>{{short_name}}</td>
-        <td>{{fullname}}</td>
-        <td>{{enrolled_users}}</td>
+        <th scope="row"><a href="/local/certificate_management/users.php?id={{id}}">{{id}}</a></th>
+        <td><a href="/local/certificate_management/users.php?id={{id}}">{{short_name}}</a></td>
+        <td><a href="/local/certificate_management/users.php?id={{id}}">{{fullname}}</a></td>
+        <td><a href="/local/certificate_management/users.php?id={{id}}">{{enrolled_users}}</a></td>
     </tr>
-{{/courses}
+{{/courses}}

@@ -25,33 +25,17 @@
 namespace local_certificate_management\output;
 
 use core\output\templatable;
-use core\output\plugin_renderer_base;
-use stdClass;
+use core\output\renderable;
+use core\output\renderer_base;
 
-class renderer extends plugin_renderer_base
+class users implements renderable, templatable
 {
-
-    public function render_pages(
-        string $pageName,
-        templatable $template,
-        array $params = []
-    )
+    public function __construct()
     {
-        $templateName = "local_certificate_management/page/$pageName";
-        return $this->$pageName($template, $templateName, $params);
-    }
-    public function courses(courses $courses, string $templateName, array $params = []): bool|string
-    {
-        return $this->render_from_template($templateName, array_merge($this->getContext($courses), $params));
     }
 
-    public function users(users $users, string $templateName, $params = []): bool|string
+    public function export_for_template(renderer_base $output): array
     {
-        return $this->render_from_template($templateName, array_merge($this->getContext($users), $params));
-    }
-
-    private function getContext(templatable $template): array
-    {
-        return $template->export_for_template($this);
+        return [];
     }
 }

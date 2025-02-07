@@ -1,5 +1,6 @@
-import Repository from 'local_certificate_management/repository';
 import Templates from "core/templates";
+import Utils from 'local_certificate_management/utils';
+import Repository from 'local_certificate_management/repository';
 
 const getParams = async root => {
     return {
@@ -28,7 +29,7 @@ const loadCourses = async (root, seeMore = false) => {
         }
 
         if (!seeMore && !data.courses.length && params.search) {
-            disableButton(root);
+            Utils.disableButton(root);
             templateToLoad = courseComponents.notFound;
         }
 
@@ -46,28 +47,18 @@ const loadCourses = async (root, seeMore = false) => {
         const coursesLength = root.find('.courses-item').length;
 
         if (data.total === coursesLength) {
-            disableButton(root);
+            Utils.disableButton(root);
         } else if (root.find('.see_more').hasClass('hidden') && data.total > coursesLength) {
-            activeButton(root);
+            Utils.activeButton(root);
         }
     } catch (error) {
         root.find('.courses-content').empty();
         root.find('.total-courses').text(0);
         const html = await Templates.render(courseComponents.empty, {});
-        disableButton(root);
+        Utils.disableButton(root);
         root.find('.courses-content').append(html);
     }
 
-}
-
-function disableButton(root, findClass = 'see_more') {
-    root.find(`.${findClass}`).addClass('hidden');
-    root.find(`.${findClass}`).attr('disabled', true);
-}
-
-function activeButton(root, findClass = 'see_more') {
-    root.find(`.${findClass}`).removeClass('hidden');
-    root.find(`.${findClass}`).attr('disabled', false);
 }
 
 const init = async root => {

@@ -21,38 +21,60 @@
  * @copyright 2025 Lucas Mendes <lucas.mendes.dev@outlook.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 namespace local_certificate_management\local\repositories;
 
-use local_certificate_management\local\repositories\params\RetrieveCoursesParam;
+use local_certificate_management\local\repositories\params\RetrieveUsersParam;
+use function JmesPath\search;
 
-class CourseRepository extends BaseRepository
+class UsersRepository extends BaseRepository
 {
+
     protected function setTable(): void
     {
-        $this->table = 'course';
+       $this->table = 'user';
     }
 
-
-    public function RetrieveCourses(
-        RetrieveCoursesParam $params
+    public function RetrieveUsers(
+        RetrieveUsersParam $params
     ): array
     {
-        $sqlEnrolledUsers = "(select count(*) from {user_enrolments} mue inner join {enrol} me on mue.enrolid = me.id where me.courseid = mc.id)";
-        $sql = "select mc.id, mc.shortname as short_name, mc.fullname, {$sqlEnrolledUsers} as enrolled_users from {{$this->table}} as mc WHERE mc.format != 'site'";
-        $sqlCount = "select count(*) from {{$this->table}} mc WHERE mc.format != 'site'";
+        $sql = <<<SQL
+                select 
+                    mu.id,
+                    concat(mu.firstname, ' ', mu.lastname) as name,
+                    mu.email
+                from {{$this->table}} mu
+                inner join {user_enrolments} mue on mu.id = mue.userid 
+                inner join {enrol} me on mue.enrolid = me.id 
+                where me.courseid = :course
+SQL;
 
-        $queryParams = [];
+
+        $sqlCount = <<<SQL
+                select 
+                    count(mu.id)
+                from {{$this->table}} mu
+                inner join {user_enrolments} mue on mu.id = mue.userid 
+                inner join {enrol} me on mue.enrolid = me.id 
+                where me.courseid = :course
+SQL;
+
+        $queryParams = [
+            'course' => $params->courseId
+        ];
+
         if ($params->search) {
-            $whereSearch = " AND (mc.fullname LIKE :search1 OR mc.shortname LIKE :search2)";
+            $whereSearch = " AND (LOWER(concat(mu.firstname, ' ', mu.lastname)) LIKE :search1 OR LOWER(mu.email) LIKE :search2)";
             $sql .= $whereSearch;
             $sqlCount .= $whereSearch;
             $queryParams['search1'] = "%{$this->builder->sql_like_escape(strtolower($params->search))}%";
             $queryParams['search2'] = "%{$this->builder->sql_like_escape(strtolower($params->search))}%";
         }
 
-        $sql .= " ORDER BY mc.id {$params->sort}";
+        $sql .= " ORDER BY mu.id {$params->sort}";
 
         return [array_values($this->builder->get_records_sql($sql, $queryParams, $params->offset, $params->limit)), $this->builder->count_records_sql($sqlCount, $queryParams)];
     }
 }
+
+

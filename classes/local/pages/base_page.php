@@ -45,7 +45,8 @@ abstract class base_page
     protected renderer_base $renderer;
     protected templatable $pageToRender;
 
-    protected array $params;
+    protected array $params = [];
+    protected array $paramsToTemplate = [];
 
     protected bool $requireAdmin = false;
     protected bool $permitGuestUser = false;
@@ -59,6 +60,7 @@ abstract class base_page
         global $PAGE, $USER;
         $this->page = $PAGE;
         $this->user = $USER;
+        $this->setParams();
         $this->setPageToRender();
         $this->setPageName();
         $this->buildPage();
@@ -80,7 +82,11 @@ abstract class base_page
      */
     private function buildPageUrl(): void
     {
-        $this->pageUrl = $this->getBaseUrl() . $this->pageName . '.php';
+        $queryString = '';
+        if (!empty($this->params)) {
+           $queryString = '?' . http_build_query($this->params);
+        }
+        $this->pageUrl = $this->getBaseUrl() . $this->pageName . '.php'.$queryString;
     }
 
     /**
@@ -117,7 +123,7 @@ abstract class base_page
         $this->manageAccess();
         echo $this->renderer->doctype();
         echo $this->renderer->header();
-        echo $this->renderer->render_pages($this->pageName, $this->pageToRender);
+        echo $this->renderer->render_pages($this->pageName, $this->pageToRender, $this->paramsToTemplate);
         echo $this->renderer->footer();
     }
 
@@ -147,6 +153,8 @@ abstract class base_page
             $this->permitGuestUser = true;
         }
     }
+
+    abstract protected function setParams();
 
     /**
      * Set page renderer

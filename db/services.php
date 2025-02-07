@@ -24,6 +24,7 @@
 
 
 use local_certificate_management\external\course;
+use local_certificate_management\external\user;
 
 $functions = [
     'local_certificate_management_retrieve_courses' => [
@@ -33,12 +34,20 @@ $functions = [
         'type'        => 'read',
         'ajax'          => true,
     ],
+    'local_certificate_management_retrieve_users' => [
+        'classname'   => user::class,
+        'methodname'  => 'retrieve_users',
+        'description' => 'Retrieve all users with the given parameters',
+        'type'        => 'read',
+        'ajax'          => true,
+    ],
 ];
 
 $services = [
     'local_certificate_management_web_service'  => [
         'functions' => [
-            'local_certificate_management_retrieve_courses'
+            'local_certificate_management_retrieve_courses',
+            'local_certificate_management_retrieve_users'
         ],
         'enabled' => 1,
         'restrictedusers' => 0,
