@@ -6,7 +6,7 @@
         <td class="text-center">{{progress}}</td>
         <td class="d-flex justify-content-center">
             <button class="btn btn-secondary me-1 d-none" data-userid="{{id}}">{{#str}} button_user_history, local_certificate_management {{/str}}</button>
-            <button class="btn btn-primary" data-userid="{{id}}">{{#str}} button_issue_certificate, local_certificate_management {{/str}}</button>
+            <button class="btn btn-primary btn-certificate" data-userid="{{id}}" data-username="{{name}}">{{#str}} button_issue_certificate, local_certificate_management {{/str}}</button>
         </td>
     </tr>
 {{/users}}

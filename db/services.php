@@ -25,6 +25,8 @@
 
 use local_certificate_management\external\course;
 use local_certificate_management\external\user;
+use local_certificate_management\external\certificate;
+use local_certificate_management\external\template;
 
 $functions = [
     'local_certificate_management_retrieve_courses' => [
@@ -41,13 +43,29 @@ $functions = [
         'type'        => 'read',
         'ajax'          => true,
     ],
+    'local_certificate_management_retrieve_templates' => [
+        'classname'   => template::class,
+        'methodname'  => 'retrieve_templates',
+        'description' => 'Retrieve all templates',
+        'type'        => 'read',
+        'ajax'          => true,
+    ],
+    'local_certificate_management_issue_certificate' => [
+        'classname'   => certificate::class,
+        'methodname'  => 'issue_certificate',
+        'description' => 'Issue a certificate',
+        'type'        => 'write',
+        'ajax'          => true,
+    ],
 ];
 
 $services = [
     'local_certificate_management_web_service'  => [
         'functions' => [
             'local_certificate_management_retrieve_courses',
-            'local_certificate_management_retrieve_users'
+            'local_certificate_management_retrieve_users',
+            'local_certificate_management_retrieve_templates',
+            'local_certificate_management_issue_certificate',
         ],
         'enabled' => 1,
         'restrictedusers' => 0,

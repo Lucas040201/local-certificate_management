@@ -1,0 +1,9 @@
+<div class="form-group">
+    <label for="template">{{#str}} modal_issue_certificate_label, local_certificate_management {{/str}}</label>
+    <select name="template" id="template" class="form-control chose-template">
+        <option value="" selected>{{#str}} modal_issue_certificate_placeholder, local_certificate_management {{/str}}</option>
+        {{#templates}}
+            <option value="{{id}}">{{name}}</option>
+        {{/templates}}
+    </select>
+</div>
