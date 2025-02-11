@@ -50,6 +50,11 @@ class renderer extends plugin_renderer_base
         return $this->render_from_template($templateName, array_merge($this->getContext($users), $params));
     }
 
+    public function certificate(certificate $certificate): bool|string
+    {
+        return $this->render_from_template('local_certificate_management/components/certificate/grade_certificate', $certificate->export_for_template($this));
+    }
+
     private function getContext(templatable $template): array
     {
         return $template->export_for_template($this);

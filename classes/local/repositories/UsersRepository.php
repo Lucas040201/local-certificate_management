@@ -21,17 +21,17 @@
  * @copyright 2025 Lucas Mendes <lucas.mendes.dev@outlook.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_certificate_management\local\repositories;
 
 use local_certificate_management\local\repositories\params\RetrieveUsersParam;
-use function JmesPath\search;
 
 class UsersRepository extends BaseRepository
 {
 
     protected function setTable(): void
     {
-       $this->table = 'user';
+        $this->table = 'user';
     }
 
     public function RetrieveUsers(
@@ -74,6 +74,13 @@ SQL;
         $sql .= " ORDER BY mu.id {$params->sort}";
 
         return [array_values($this->builder->get_records_sql($sql, $queryParams, $params->offset, $params->limit)), $this->builder->count_records_sql($sqlCount, $queryParams)];
+    }
+
+    public function getUser(int $userId)
+    {
+        return $this->builder->get_record($this->table, [
+            'id' => $userId
+        ]);
     }
 }
 

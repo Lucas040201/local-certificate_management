@@ -26,6 +26,7 @@ namespace local_certificate_management\local\services;
 
 use core_completion\progress;
 use local_certificate_management\local\repositories\UsersRepository;
+use local_certificate_management\local\repositories\GradeRepository;
 use local_certificate_management\local\repositories\params\RetrieveUsersParam;
 
 class UsersService
@@ -33,9 +34,12 @@ class UsersService
     private static ?UsersService $service = null;
     private UsersRepository $repository;
 
+    private GradeRepository $gradeRepository;
+
     public function __construct()
     {
         $this->repository = new UsersRepository();
+        $this->gradeRepository = new GradeRepository();
     }
 
     public function retrieveUsers(
@@ -67,9 +71,37 @@ class UsersService
                 $user->progress = $progress . '%';
                 return $user;
             }, $users),
-        ];;
+        ];
     }
 
+    public function getUserGradeToPdf(
+        int $userId,
+        int $courseId
+    )
+    {
+        $grades = $this->gradeRepository->getUserGrade($courseId, $userId);
+        $activity1 = $grades[0]->grade ?? 0;
+        $activity2 = $grades[1]->grade ?? 0;
+        $activity3 = $grades[2]->grade ?? 0;
+        $activity4 = $grades[3]->grade ?? 0;
+
+        $total = array_reduce($grades, function ($current, $next) {
+            return $current + $next->grade;
+        }, 0);
+
+        $average = ceil($total / count($grades));
+
+        $user = $this->repository->getUser($userId);
+        $fullname = $user->firstname . ' ' . $user->lastname;
+        return [
+            'grade1' => ceil($activity1),
+            'grade2' => ceil($activity2),
+            'grade3' => ceil($activity3),
+            'grade4' => ceil($activity4),
+            'average' => $average,
+            'fullname' => $fullname,
+        ];
+    }
 
     public static function getService(): UsersService
     {

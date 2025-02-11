@@ -1,0 +1,14 @@
+{
+    "name": "moodle/local-certificate-management",
+    "require": {
+        "dompdf/dompdf": "2.0"
+    },
+    "config": {
+        "vendor-dir": "vendor"
+    },
+    "autoload": {
+        "psr-4": {
+            "local_certificate_management\\": "classes/"
+        }
+    }
+}
