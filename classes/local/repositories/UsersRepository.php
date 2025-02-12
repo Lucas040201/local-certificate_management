@@ -42,7 +42,12 @@ class UsersRepository extends BaseRepository
                 select 
                     mu.id,
                     concat(mu.firstname, ' ', mu.lastname) as name,
-                    mu.email
+                    mu.email,
+                    case when 
+                        EXISTS(
+                            select 1 from {tool_certificate_issues} mtci where mtci.userid = mu.id
+                        ) then 1 
+                        else 0 end as has_certificate
                 from {{$this->table}} mu
                 inner join {user_enrolments} mue on mu.id = mue.userid 
                 inner join {enrol} me on mue.enrolid = me.id 

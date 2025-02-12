@@ -25,15 +25,26 @@
 namespace local_certificate_management\local\services;
 
 use tool_certificate\template;
+use local_certificate_management\local\repositories\CertificateRepository;
 use local_certificate_management\local\services\params\IssueCertificateParams;
 
 class CertificateService
 {
     private static ?CertificateService $service = null;
 
-    public function issueCertificate(
+    private CertificateRepository $repository;
+
+    public function __construct()
+    {
+        $this->repository = new CertificateRepository();
+    }
+
+    /**
+     * @throws \dml_exception
+     */
+    private function createCertificate(
         IssueCertificateParams $params
-    )
+    ): array
     {
         $template = template::instance($params->templateId);
         $certificateId = $template->issue_certificate(
@@ -41,8 +52,44 @@ class CertificateService
             courseid: $params->courseId,
         );
 
+        $certificate = $this->repository->findById($certificateId);
+
+        $moodleUrl = $template->get_issue_file_url($certificate);
+
         return [
-            'certificateId' => $certificateId,
+            'certificate' => $moodleUrl->out(),
+        ];
+    }
+
+    /**
+     * @throws \dml_exception
+     */
+    public function issueCertificate(
+        IssueCertificateParams $params
+    )
+    {
+        $certificates = $this->repository->findAllUserIssueByCourse(
+            $params->courseId,
+            $params->userId
+        );
+
+        foreach ($certificates as $certificate) {
+            $template = template::instance($certificate->templateid);
+            $template->revoke_issue($certificate->id);
+        }
+
+        return $this->createCertificate($params);
+    }
+
+    public function getCertificateUrl(
+        int $courseId,
+        int $userId
+    )
+    {
+        $certificate = $this->repository->findByUserIdAndCourse($userId, $courseId);
+        $template = template::instance($certificate->templateid);
+        return [
+            'certificate' => $template->get_issue_file_url($certificate)->out()
         ];
     }
 

@@ -25,6 +25,7 @@
 
 use local_certificate_management\external\course;
 use local_certificate_management\external\user;
+use local_certificate_management\external\history;
 use local_certificate_management\external\certificate;
 use local_certificate_management\external\template;
 
@@ -57,6 +58,27 @@ $functions = [
         'type'        => 'write',
         'ajax'          => true,
     ],
+    'local_certificate_management_get_certificate_url' => [
+        'classname'   => certificate::class,
+        'methodname'  => 'get_certificate_url',
+        'description' => 'Get Certificate Url',
+        'type'        => 'read',
+        'ajax'          => true,
+    ],
+    'local_certificate_management_find_history_certificate' => [
+        'classname'   => history::class,
+        'methodname'  => 'find_grade_history',
+        'description' => 'Find history of grade',
+        'type'        => 'read',
+        'ajax'          => true,
+    ],
+    'local_certificate_management_issue_history_certificate' => [
+        'classname'   => history::class,
+        'methodname'  => 'issue_grade_history',
+        'description' => 'Issue a history grade',
+        'type'        => 'write',
+        'ajax'          => true,
+    ],
 ];
 
 $services = [
@@ -66,6 +88,9 @@ $services = [
             'local_certificate_management_retrieve_users',
             'local_certificate_management_retrieve_templates',
             'local_certificate_management_issue_certificate',
+            'local_certificate_management_get_certificate_url',
+//            'local_certificate_management_find_history_certificate',
+//            'local_certificate_management_issue_history_certificate',
         ],
         'enabled' => 1,
         'restrictedusers' => 0,

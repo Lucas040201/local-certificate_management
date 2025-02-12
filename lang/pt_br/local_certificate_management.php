@@ -42,6 +42,7 @@ $string['user_table_not_found'] = 'Nenhum usuário foi encontrado com os paramet
 $string['user_thead_name'] = 'Nome';
 $string['user_thead_email'] = 'E-mail';
 $string['user_thead_progress'] = 'Progresso';
+$string['user_thead_certificate'] = 'Certificado emitido';
 $string['user_thead_actions'] = 'Ações';
 $string['button_user_history'] = 'Histórico';
 $string['button_issue_certificate'] = 'Emitir Certificado';
@@ -49,6 +50,16 @@ $string['modal_issue_certificate_title'] = 'Emitir certificado';
 $string['modal_issue_certificate_label'] = 'Escolha o template para a gerar o certificado!';
 $string['modal_issue_certificate_placeholder'] = 'Selecionar';
 $string['modal_certified_issued_with_success_title'] = 'Certificado emitido com sucesso!';
-$string['modal_certified_issued_with_success_body'] = 'O certificado para o aluno {$a} foi emitido com sucesso!';
+$string['modal_certified_issued_with_success_body'] = 'O certificado para o aluno {$a->name} foi emitido com sucesso! Clique <a href="{$a->certificate}" target="_blank">aqui<a/> para visualizar o certificado.';
 $string['modal_certified_issued_with_error_title'] = 'Erro ao tentar emitir o certificado!';
 $string['modal_certified_issued_with_error_body'] = 'Houve um erro ao tentar emitir o certificado para o aluno {$a}!';
+$string['modal_certified_issued_with_error_body_select'] = 'Selecione um modelo de certificado para prosseguir!';
+$string['has_certificate'] = 'SIM';
+$string['hasnt_certificate'] = 'NÃO';
+$string['modal_regen_certificate'] = 'Emitir Certificado Novamente';
+$string['button_see_certificate'] = 'Ver Certificado';
+$string['modal_regen_certificate_explain'] = 'Este usuário já possui um certificado. Escolha um novo modelo e gere novamente.';
+$string['button_cancel'] = 'Cancelar';
+$string['modal_certified_issued_not_found_body'] = 'O certificado não foi encontrado!';
+
+

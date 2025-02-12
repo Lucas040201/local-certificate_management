@@ -13,7 +13,7 @@ use core_external\external_function_parameters;
 use local_certificate_management\local\services\CertificateService;
 use local_certificate_management\local\services\params\IssueCertificateParams;
 
-class certificate extends external_api
+class history extends external_api
 {
     /**
      * Describes the parameters for change_time.
@@ -21,11 +21,10 @@ class certificate extends external_api
      * @return external_function_parameters
      * @since Moodle 3.3
      */
-    public static function issue_certificate_parameters(): external_function_parameters
+    public static function find_grade_history_parameters(): external_function_parameters
     {
         return new external_function_parameters(
             array(
-                'templateId' => new external_value(PARAM_INT, 'Template Id', VALUE_REQUIRED),
                 'courseId' => new external_value(PARAM_INT, 'Course Id', VALUE_REQUIRED),
                 'userId' => new external_value(PARAM_INT, 'User Id', VALUE_REQUIRED),
             )
@@ -38,16 +37,16 @@ class certificate extends external_api
      * @return external_function_parameters
      * @since Moodle 3.3
      */
-    public static function issue_certificate_returns(): external_single_structure
+    public static function find_grade_history_returns(): external_single_structure
     {
         return new external_single_structure(
             array(
-                'certificate' => new external_value(PARAM_TEXT),
+                'history' => new external_value(PARAM_TEXT),
             )
         );
     }
 
-    public static function issue_certificate(
+    public static function find_grade_history(
         int    $templateId,
         int    $courseId,
         int    $userId
@@ -78,7 +77,7 @@ class certificate extends external_api
      * @return external_function_parameters
      * @since Moodle 3.3
      */
-    public static function get_certificate_url_parameters(): external_function_parameters
+    public static function issue_grade_history_parameters(): external_function_parameters
     {
         return new external_function_parameters(
             array(
@@ -94,25 +93,28 @@ class certificate extends external_api
      * @return external_function_parameters
      * @since Moodle 3.3
      */
-    public static function get_certificate_url_returns(): external_single_structure
+    public static function issue_grade_history_returns(): external_single_structure
     {
         return new external_single_structure(
             array(
-                'certificate' => new external_value(PARAM_TEXT),
+                'history' => new external_value(PARAM_TEXT),
             )
         );
     }
 
-    public static function get_certificate_url(
+    public static function issue_grade_history(
+        int    $templateId,
         int    $courseId,
         int    $userId
     )
     {
         try {
-            return CertificateService::getService()->getCertificateUrl(
-                $courseId,
-                $userId
+            $params = new IssueCertificateParams(
+                $templateId,
+                $userId,
+                $courseId
             );
+            return CertificateService::getService()->issueCertificate($params);
         } catch (Throwable $exception) {
             $statusCode = 500;
 

@@ -48,6 +48,7 @@ class user extends external_api
                     "id" => new external_value(PARAM_INT),
                     "name" => new external_value(PARAM_TEXT),
                     "email" => new external_value(PARAM_TEXT),
+                    "has_certificate" => new external_value(PARAM_BOOL),
                     "progress" => new external_value(PARAM_TEXT),
                 ])),
                 "total" => new external_value(PARAM_INT),

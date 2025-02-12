@@ -43,6 +43,7 @@ $string['user_table_not_found'] = 'No users were found with the given parameters
 $string['user_thead_name'] = 'Name';
 $string['user_thead_email'] = 'Email';
 $string['user_thead_progress'] = 'Progress';
+$string['user_thead_certificate'] = 'Certificate issued';
 $string['user_thead_actions'] = 'Actions';
 $string['button_user_history'] = 'History';
 $string['button_issue_certificate'] = 'Issue Certificate';
@@ -50,6 +51,16 @@ $string['modal_issue_certificate_title'] = 'Issue certificate';
 $string['modal_issue_certificate_label'] = 'Choose the template to generate the certificate!';
 $string['modal_issue_certificate_placeholder'] = 'Select';
 $string['modal_certified_issued_with_success_title'] = 'Certificate issued successfully!';
-$string['modal_certified_issued_with_success_body'] = 'Certificate issued successfully for student {$a}!';
+$string['modal_certified_issued_with_success_body'] = 'The certificate for student {$a->name} has been issued successfully! Click <a href="{$a->certificate}" target="_blank">here<a/> to view the certificate.';
 $string['modal_certified_issued_with_error_title'] = 'Error trying to issue certificate!';
 $string['modal_certified_issued_with_error_body'] = 'There was an error trying to issue certificate for student {$a}!';
+$string['modal_certified_issued_with_error_body_select'] = 'Please select a certificate template to proceed!';
+$string['has_certificate'] = 'YES';
+$string['hasnt_certificate'] = 'NO';
+$string['modal_regen_certificate'] = 'Reissue Certificate';
+$string['button_see_certificate'] = 'View Certificate';
+$string['modal_regen_certificate_explain'] = 'This user already has a certificate. Please choose a new template and regenerate.';
+$string['button_cancel'] = 'Cancel';
+$string['modal_certified_issued_not_found_body'] = 'Certificate not found!';
+
+

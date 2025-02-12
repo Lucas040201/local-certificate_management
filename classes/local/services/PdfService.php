@@ -28,6 +28,7 @@ require_once(__DIR__ . '/../../../vendor/autoload.php');
 
 
 use moodle_url;
+use stored_file;
 use context_user;
 use Dompdf\Dompdf;
 use Dompdf\Options;
@@ -48,11 +49,15 @@ class PdfService
         $this->pdf = new Dompdf($options);
     }
 
-    public function generateGradePdf(array $data)
+    public function generateGradePdf(
+        int $userId,
+        int $courseId,
+        int $issueId
+    )
     {
         list($template, $gradeInfo) = $this->getCertificateTemplate(
-            $data['relateduserid'],
-            $data['courseid']
+            $userId,
+            $courseId
         );
 
         $this->pdf->loadHtml($template);
@@ -60,14 +65,19 @@ class PdfService
         $this->pdf->render();
         $output = $this->pdf->output();
 
-        $fileName = str_replace(' ', '_', $gradeInfo['fullname']) . '_' . $data['objectid'];
+        $fileName = str_replace(' ', '_', strtolower($gradeInfo['fullname'])) . '_' . $issueId;
 
-        $file = $this->generateFile($data['objectid'], $fileName, $output);
+        $file = $this->generateFile($issueId, $fileName, $output);
+        return $this->getFileUrl($file, $fileName, $issueId);
+    }
+
+    private function getFileUrl(stored_file $file, string $fileName, int $issueId): string
+    {
         return moodle_url::make_pluginfile_url(
             $file->get_contextid(),
             $file->get_component(),
             $file->get_filearea(),
-            $data['objectid'],
+            $issueId,
             $file->get_filepath(),
             $fileName . '.pdf'
         )->out();

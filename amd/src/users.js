@@ -60,7 +60,6 @@ const loadUsers = async (root, seeMore = false) => {
         }
         await issueCertificate(root);
     } catch (error) {
-        console.log(error);
         root.find('.users-content').empty();
         root.find('.total-users').text(0);
         const html = await Templates.render(usersComponents.empty, {});
@@ -73,43 +72,123 @@ const loadUsers = async (root, seeMore = false) => {
 const issueCertificate = async root => {
     root.find('.btn-certificate').off();
     root.find('.btn-certificate').on('click', async clickEvent => {
+
+        const hasCertificate = $(clickEvent.currentTarget).attr('data-hascertificate');
+        if(hasCertificate === 'true') {
+            regenCertificate(root, clickEvent);
+            return;
+        }
         const response = await Repository.retrieveTemplates();
         const userId = $(clickEvent.currentTarget).attr('data-userid');
         const userFullName = $(clickEvent.currentTarget).attr('data-username');
-        const modal = await ModalSaveCancel.create({
+
+        const modal = await ModalDefault.create({
             title: await getString('modal_issue_certificate_title', 'local_certificate_management'),
             body: Templates.render('local_certificate_management/components/modal/select_certificate', {templates: response.templates}),
             isVerticallyCentered: true,
         });
 
-        modal.getRoot().on(ModalEvents.save, async saveEvent => {
-            const selectValue = $(saveEvent.currentTarget).find('.chose-template').val();
+        modal.setFooter(await Templates.render('local_certificate_management/components/modal/modal_footer_issue', {}));
+        modal.getRoot().find('.btn.issue').on('click', async event => {
+            const selectValue = modal.getRoot().find('.chose-template').val();
             const params = await getParams(root);
 
-            Repository.issueCertificate({
-                templateId: Number(selectValue),
-                courseId: Number(params.courseId),
-                userId: Number(userId),
-            }).then(async () => {
-                await ModalDefault.create({
-                    title: await getString('modal_certified_issued_with_success_title', 'local_certificate_management'),
-                    body: await getString('modal_certified_issued_with_success_body', 'local_certificate_management', userFullName),
-                    show: true,
-                    isVerticallyCentered: true
-                });
-            }).catch(async () => {
-                await ModalDefault.create({
-                    title: await getString('modal_certified_issued_with_error_title', 'local_certificate_management'),
-                    body: await getString('modal_certified_issued_with_error_body', 'local_certificate_management', userFullName),
-                    show: true,
-                    isVerticallyCentered: true
-                });
-            });
+            await issueCertificateCall(selectValue, params, userId, userFullName, modal);
         });
 
         await modal.show();
     });
 }
+
+const regenCertificate = async (root, event) => {
+    const response = await Repository.retrieveTemplates();
+    const userId = $(event.currentTarget).attr('data-userid');
+    const userFullName = $(event.currentTarget).attr('data-username');
+    const modal = await ModalDefault.create({
+        title: await getString('modal_regen_certificate', 'local_certificate_management'),
+        body: Templates.render('local_certificate_management/components/modal/regen_certificate', {templates: response.templates}),
+        isVerticallyCentered: true,
+    });
+
+    modal.setFooter(await Templates.render('local_certificate_management/components/modal/modal_footer_regen', {}));
+
+    modal.getRoot().find('.btn.regen').on('click', async event => {
+        const selectValue = modal.getRoot().find('.chose-template').val();
+
+        const params = await getParams(root);
+
+
+        await issueCertificateCall(selectValue, params, userId, userFullName, modal);
+    });
+
+    modal.getRoot().find('.btn.see').on('click', async event => {
+        const params = await getParams(root);
+
+        Repository.getCertificateUrl({
+            courseId: Number(params.courseId),
+            userId: Number(userId),
+        }).then(async (response) => {
+            window.open(response.certificate, "_blank");
+        }).catch(async () => {
+            modal.hide();
+            await ModalDefault.create({
+                title: await getString('modal_certified_issued_with_error_title', 'local_certificate_management'),
+                body: await getString('modal_certified_issued_not_found_body', 'local_certificate_management'),
+                show: true,
+                isVerticallyCentered: true
+            });
+        });
+    });
+
+    await modal.show();
+}
+
+const issueCertificateCall = async (selectValue, params, userId, userFullName, modal) => {
+    if(!await validateSelectValue(selectValue)) {
+        return;
+    }
+
+    Repository.issueCertificate({
+        templateId: Number(selectValue),
+        courseId: Number(params.courseId),
+        userId: Number(userId),
+    }).then(async (response) => {
+        console.log(response);
+        modal.destroy();
+        await ModalDefault.create({
+            title: await getString('modal_certified_issued_with_success_title', 'local_certificate_management'),
+            body: await getString('modal_certified_issued_with_success_body', 'local_certificate_management', {
+                certificate: response.certificate,
+                name: userFullName
+            }),
+            show: true,
+            isVerticallyCentered: true
+        });
+    }).catch(async () => {
+        modal.destroy();
+        await ModalDefault.create({
+            title: await getString('modal_certified_issued_with_error_title', 'local_certificate_management'),
+            body: await getString('modal_certified_issued_with_error_body', 'local_certificate_management', userFullName),
+            show: true,
+            isVerticallyCentered: true
+        });
+    });
+}
+
+const validateSelectValue = async (selectValue) => {
+    if(selectValue) {
+        return true;
+    }
+    await ModalDefault.create({
+        title: await getString('modal_certified_issued_with_error_title', 'local_certificate_management'),
+        body: await getString('modal_certified_issued_with_error_body_select', 'local_certificate_management'),
+        show: true,
+        isVerticallyCentered: true
+    });
+
+    return false;
+}
+
 const init = async root => {
     await loadUsers(root);
 

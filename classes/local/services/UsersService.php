@@ -69,6 +69,7 @@ class UsersService
             'users' => array_map(function ($user) use ($course) {
                 $progress = (int) progress::get_course_progress_percentage($course, $user->id) ?? 0;
                 $user->progress = $progress . '%';
+                $user->has_certificate = !!$user->has_certificate;
                 return $user;
             }, $users),
         ];

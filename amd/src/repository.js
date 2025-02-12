@@ -45,9 +45,45 @@ const issueCertificate = async obj => {
     return Ajax.call([request])[0];
 };
 
+const getCertificateUrl = async obj => {
+    const request = {
+        methodname: 'local_certificate_management_get_certificate_url',
+        args: {
+            ...obj
+        }
+    };
+
+    return Ajax.call([request])[0];
+};
+
+const findHistory = async obj => {
+    const request = {
+        methodname: 'local_certificate_management_find_history_certificate',
+        args: {
+            ...obj
+        }
+    };
+
+    return Ajax.call([request])[0];
+};
+
+const issueHistory = async obj => {
+    const request = {
+        methodname: 'local_certificate_management_issue_history_certificate',
+        args: {
+            ...obj
+        }
+    };
+
+    return Ajax.call([request])[0];
+};
+
 export default {
     retrieveCourses,
     retrieveUsers,
     retrieveTemplates,
     issueCertificate,
+    getCertificateUrl,
+    findHistory,
+    issueHistory,
 };
