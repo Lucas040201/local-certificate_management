@@ -111,6 +111,43 @@ class PdfService
         return [$output->certificate($page), $grade];
     }
 
+    /**
+     * @throws \dml_exception
+     */
+    public function deleteFile(int $issueId): bool
+    {
+        $fs = get_file_storage();
+        return $fs->delete_area_files(
+            \context_system::instance()->id,
+            'local_certificate_management',
+            'issues_grade',
+            $issueId
+        );
+    }
+
+    public function getHistoryGradeUrl(
+        int $issueId,
+        string $userFullName
+    ): string
+    {
+        $fileName = str_replace(' ', '_', strtolower($userFullName)) . '_' . $issueId;
+        $fs = get_file_storage();
+        $file = $fs->get_file(
+            \context_system::instance()->id,
+            'local_certificate_management',
+            'issues_grade',
+            $issueId,
+            '/',
+            $fileName . '.pdf',
+        );
+
+        if(empty($file)) {
+            return '';
+        }
+
+        return $this->getFileUrl($file, $fileName, $issueId);
+    }
+
     public static function getService(): PdfService
     {
         if (self::$service === null) {

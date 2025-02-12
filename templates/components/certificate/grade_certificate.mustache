@@ -56,7 +56,9 @@
     <p class="address">Av. Washington Luis, 56 – Santos – São Paulo – Cep 11050-200 – Tel.:(13) 3222-5619 / 3222-4082</p>
     <p class="subtitle">Histórico de Notas</p>
     <p class="student-name">Nome do Aluno: {{fullname}}</p>
-    <p class="student-document">CPF do Aluno: 000.000.000-00</p>
+    {{#document}}
+        <p class="student-document">CPF do Aluno: {{document}}</p>
+    {{/document}}
     <table>
         <tr class="header">
             <td>GRUPO</td>

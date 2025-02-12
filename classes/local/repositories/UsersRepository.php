@@ -83,10 +83,18 @@ SQL;
 
     public function getUser(int $userId)
     {
-        return $this->builder->get_record($this->table, [
-            'id' => $userId
+        $sql = <<<SQL
+        select 
+            mu.*,
+            muid.data AS document
+        from {{$this->table}} mu
+        LEFT JOIN {user_info_data} muid ON muid.userid = mu.id
+        LEFT JOIN {user_info_field} muif ON muif.id = muid.fieldid AND muif.shortname = 'documento'
+        where mu.id = :userid
+SQL;
+
+        return $this->builder->get_record_sql($sql, [
+            'userid' => $userId
         ]);
     }
 }
-
-

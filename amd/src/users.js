@@ -59,6 +59,7 @@ const loadUsers = async (root, seeMore = false) => {
             Utils.activeButton(root);
         }
         await issueCertificate(root);
+        await issueHistory(root);
     } catch (error) {
         root.find('.users-content').empty();
         root.find('.total-users').text(0);
@@ -67,6 +68,101 @@ const loadUsers = async (root, seeMore = false) => {
         root.find('.users-content').append(html);
     }
 
+}
+
+const issueHistory = async root => {
+    root.find('.btn-history').off();
+    root.find('.btn-history').on('click', async clickEvent => {
+
+        const hasHistory = $(clickEvent.currentTarget).attr('data-hashistory');
+        if(hasHistory === 'true') {
+            regenHistory(root, clickEvent);
+            return;
+        }
+        const userId = $(clickEvent.currentTarget).attr('data-userid');
+        const userFullName = $(clickEvent.currentTarget).attr('data-username');
+
+        const modal = await ModalDefault.create({
+            title: await getString('modal_issue_history_title', 'local_certificate_management'),
+            body: await getString('generate_history', 'local_certificate_management', userFullName),
+            isVerticallyCentered: true,
+        });
+
+        modal.setFooter(await Templates.render('local_certificate_management/components/modal/modal_footer_gen_history', {}));
+        modal.getRoot().find('.btn.issue').on('click', async event => {
+            const params = await getParams(root);
+
+            await issueHistoryCall(params, userId, userFullName, modal);
+        });
+
+        await modal.show();
+    });
+}
+
+const regenHistory = async (root, event) => {
+    const userId = $(event.currentTarget).attr('data-userid');
+    const userFullName = $(event.currentTarget).attr('data-username');
+    const modal = await ModalDefault.create({
+        title: await getString('modal_regen_history', 'local_certificate_management'),
+        body: await getString('regen_history', 'local_certificate_management'),
+        isVerticallyCentered: true,
+    });
+
+    modal.setFooter(await Templates.render('local_certificate_management/components/modal/modal_footer_regen_history', {}));
+
+    modal.getRoot().find('.btn.regen').on('click', async event => {
+        const params = await getParams(root);
+
+
+        await issueHistoryCall(params, userId, userFullName, modal);
+    });
+
+    modal.getRoot().find('.btn.see').on('click', async event => {
+        const params = await getParams(root);
+
+        Repository.getHistoryUrl({
+            courseId: Number(params.courseId),
+            userId: Number(userId),
+        }).then(async (response) => {
+            window.open(response.history, "_blank");
+        }).catch(async () => {
+            modal.hide();
+            await ModalDefault.create({
+                title: await getString('modal_certified_issued_with_error_title', 'local_certificate_management'),
+                body: await getString('modal_certified_issued_not_found_body', 'local_certificate_management'),
+                show: true,
+                isVerticallyCentered: true
+            });
+        });
+    });
+
+    await modal.show();
+}
+
+const issueHistoryCall = async (params, userId, userFullName, modal) => {
+    Repository.issueHistory({
+        courseId: Number(params.courseId),
+        userId: Number(userId),
+    }).then(async (response) => {
+        modal.destroy();
+        await ModalDefault.create({
+            title: await getString('modal_history_issued_with_success_title', 'local_certificate_management'),
+            body: await getString('modal_history_issued_with_success_body', 'local_certificate_management', {
+                history: response.history,
+                name: userFullName
+            }),
+            show: true,
+            isVerticallyCentered: true
+        });
+    }).catch(async () => {
+        modal.destroy();
+        await ModalDefault.create({
+            title: await getString('modal_history_issued_with_error_title', 'local_certificate_management'),
+            body: await getString('modal_history_issued_with_error_body', 'local_certificate_management', userFullName),
+            show: true,
+            isVerticallyCentered: true
+        });
+    });
 }
 
 const issueCertificate = async root => {

@@ -56,9 +56,9 @@ const getCertificateUrl = async obj => {
     return Ajax.call([request])[0];
 };
 
-const findHistory = async obj => {
+const getHistoryUrl = async obj => {
     const request = {
-        methodname: 'local_certificate_management_find_history_certificate',
+        methodname: 'local_certificate_management_get_history_certificate',
         args: {
             ...obj
         }
@@ -84,6 +84,6 @@ export default {
     retrieveTemplates,
     issueCertificate,
     getCertificateUrl,
-    findHistory,
+    getHistoryUrl,
     issueHistory,
 };

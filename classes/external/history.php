@@ -10,6 +10,7 @@ use invalid_parameter_exception;
 use core_external\external_value;
 use core_external\external_single_structure;
 use core_external\external_function_parameters;
+use local_certificate_management\local\services\HistoryService;
 use local_certificate_management\local\services\CertificateService;
 use local_certificate_management\local\services\params\IssueCertificateParams;
 
@@ -21,7 +22,7 @@ class history extends external_api
      * @return external_function_parameters
      * @since Moodle 3.3
      */
-    public static function find_grade_history_parameters(): external_function_parameters
+    public static function get_grade_history_parameters(): external_function_parameters
     {
         return new external_function_parameters(
             array(
@@ -37,7 +38,7 @@ class history extends external_api
      * @return external_function_parameters
      * @since Moodle 3.3
      */
-    public static function find_grade_history_returns(): external_single_structure
+    public static function get_grade_history_returns(): external_single_structure
     {
         return new external_single_structure(
             array(
@@ -46,19 +47,16 @@ class history extends external_api
         );
     }
 
-    public static function find_grade_history(
-        int    $templateId,
+    public static function get_grade_history(
         int    $courseId,
         int    $userId
     )
     {
         try {
-            $params = new IssueCertificateParams(
-                $templateId,
-                $userId,
-                $courseId
+            return HistoryService::getService()->getHistoryUrl(
+                $courseId,
+                $userId
             );
-            return CertificateService::getService()->issueCertificate($params);
         } catch (Throwable $exception) {
             $statusCode = 500;
 
@@ -103,18 +101,15 @@ class history extends external_api
     }
 
     public static function issue_grade_history(
-        int    $templateId,
         int    $courseId,
         int    $userId
     )
     {
         try {
-            $params = new IssueCertificateParams(
-                $templateId,
-                $userId,
-                $courseId
+            return HistoryService::getService()->issueHistory(
+                $courseId,
+                $userId
             );
-            return CertificateService::getService()->issueCertificate($params);
         } catch (Throwable $exception) {
             $statusCode = 500;
 

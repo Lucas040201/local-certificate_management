@@ -43,6 +43,7 @@ $string['user_thead_name'] = 'Nome';
 $string['user_thead_email'] = 'E-mail';
 $string['user_thead_progress'] = 'Progresso';
 $string['user_thead_certificate'] = 'Certificado emitido';
+$string['user_thead_history'] = 'Histórico de Notas';
 $string['user_thead_actions'] = 'Ações';
 $string['button_user_history'] = 'Histórico';
 $string['button_issue_certificate'] = 'Emitir Certificado';
@@ -61,5 +62,19 @@ $string['button_see_certificate'] = 'Ver Certificado';
 $string['modal_regen_certificate_explain'] = 'Este usuário já possui um certificado. Escolha um novo modelo e gere novamente.';
 $string['button_cancel'] = 'Cancelar';
 $string['modal_certified_issued_not_found_body'] = 'O certificado não foi encontrado!';
+$string['modal_issue_history_title'] = 'Emitir Histórico!';
+$string['generate_history'] = 'Você tem certeza que deseja gerar o histórico de notas para o usuário {$a}?';
+$string['button_issue_history'] = 'Emitir Histórico';
+$string['button_see_history'] = 'Ver Histórico';
+$string['modal_history_issued_with_success_title'] = 'Histórico criado com sucesso!';
+$string['modal_history_issued_with_success_body'] = 'O histórico do aluno {$a->name} foi emitido com sucesso! <a href="{$a->history}" target="_blank">aqui<a/> para visualizar o Histórico.';
+$string['modal_history_issued_with_error_title'] = 'Erro ao tentar emitir o histórico!';
+$string['modal_history_issued_with_error_body'] = 'Houve um erro ao tentar emitir o histórico para o aluno {$a}';
+$string['regen_history'] = 'Este usuário ja possui um histórico. Você pode visualizar ou apagar!';
+$string['modal_regen_history'] = 'Emitir Histórico Novamente';
+
+
+
+
 
 

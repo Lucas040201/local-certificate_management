@@ -12,8 +12,16 @@
             {{#str}} hasnt_certificate, local_certificate_management {{/str}}
         {{/has_certificate}}
         </td>
+        <td class="text-center">
+        {{#has_history}}
+            {{#str}} has_certificate, local_certificate_management {{/str}}
+        {{/has_history}}
+        {{^has_history}}
+            {{#str}} hasnt_certificate, local_certificate_management {{/str}}
+        {{/has_history}}
+        </td>
         <td class="d-flex justify-content-center">
-            <button class="btn btn-secondary me-1 d-none" data-userid="{{id}}">{{#str}} button_user_history, local_certificate_management {{/str}}</button>
+            <button class="btn btn-secondary me-1 btn-history" data-userid="{{id}}" data-username="{{name}}" data-hashistory="{{has_history}}">{{#str}} button_user_history, local_certificate_management {{/str}}</button>
             <button class="btn btn-primary btn-certificate" data-userid="{{id}}" data-username="{{name}}" data-hascertificate="{{has_certificate}}">{{#str}} button_issue_certificate, local_certificate_management {{/str}}</button>
         </td>
     </tr>

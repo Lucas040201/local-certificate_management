@@ -44,6 +44,7 @@ $string['user_thead_name'] = 'Name';
 $string['user_thead_email'] = 'Email';
 $string['user_thead_progress'] = 'Progress';
 $string['user_thead_certificate'] = 'Certificate issued';
+$string['user_thead_history'] = 'Grade History';
 $string['user_thead_actions'] = 'Actions';
 $string['button_user_history'] = 'History';
 $string['button_issue_certificate'] = 'Issue Certificate';
@@ -62,5 +63,13 @@ $string['button_see_certificate'] = 'View Certificate';
 $string['modal_regen_certificate_explain'] = 'This user already has a certificate. Please choose a new template and regenerate.';
 $string['button_cancel'] = 'Cancel';
 $string['modal_certified_issued_not_found_body'] = 'Certificate not found!';
-
-
+$string['modal_issue_history_title'] = 'Issue History';
+$string['generate_history'] = 'Are you sure you want to generate the grade history for user {$a}?';
+$string['button_issue_history'] = 'Issue History';
+$string['button_see_history'] = 'View History';
+$string['modal_history_issued_with_success_title'] = 'History issued successfully!';
+$string['modal_history_issued_with_success_body'] = 'History issued successfully for student {$a->name}! <a href="{$a->history}" target="_blank">here<a/> to view the History.';
+$string['modal_history_issued_with_error_title'] = 'An error occurred while trying to issue the history!';
+$string['modal_history_issued_with_error_body'] = 'There was an error while trying to issue the history for student {$a}';
+$string['regen_history'] = 'This user already has a history. You can view or delete it!';
+$string['modal_regen_history'] = 'Reissue History';

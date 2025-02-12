@@ -27,6 +27,7 @@ namespace local_certificate_management\local\services;
 use core_completion\progress;
 use local_certificate_management\local\repositories\UsersRepository;
 use local_certificate_management\local\repositories\GradeRepository;
+use local_certificate_management\local\repositories\CertificateRepository;
 use local_certificate_management\local\repositories\params\RetrieveUsersParam;
 
 class UsersService
@@ -36,10 +37,13 @@ class UsersService
 
     private GradeRepository $gradeRepository;
 
+    private CertificateRepository $certificateRepository;
+
     public function __construct()
     {
         $this->repository = new UsersRepository();
         $this->gradeRepository = new GradeRepository();
+        $this->certificateRepository = new CertificateRepository();
     }
 
     public function retrieveUsers(
@@ -70,9 +74,22 @@ class UsersService
                 $progress = (int) progress::get_course_progress_percentage($course, $user->id) ?? 0;
                 $user->progress = $progress . '%';
                 $user->has_certificate = !!$user->has_certificate;
+                $user->has_history = $this->hasHistory($user->id, $course->id, $user->name);
                 return $user;
             }, $users),
         ];
+    }
+
+    private function hasHistory($userId, $courseId, $userFullName)
+    {
+        $certificate = $this->certificateRepository->findByUserIdAndCourse(
+            $userId,
+            $courseId
+        );
+        return !!PdfService::getService()->getHistoryGradeUrl(
+            $certificate->id,
+            $userFullName
+        );
     }
 
     public function getUserGradeToPdf(
@@ -90,7 +107,10 @@ class UsersService
             return $current + $next->grade;
         }, 0);
 
-        $average = ceil($total / count($grades));
+        $average = 0;
+        if($total > 0) {
+            $average = ceil($total / count($grades));
+        }
 
         $user = $this->repository->getUser($userId);
         $fullname = $user->firstname . ' ' . $user->lastname;
@@ -101,7 +121,25 @@ class UsersService
             'grade4' => ceil($activity4),
             'average' => $average,
             'fullname' => $fullname,
+            'document' => $this->formatCpfDocument($user->document)
         ];
+    }
+
+    private function formatCpfDocument(?string $cpf)
+    {
+        if (empty($cpf)) {
+            return '';
+        }
+
+        $formatedRegex = '/^\d{3}\.\d{3}\.\d{3}-\d{2}$/';
+
+        if (preg_match($formatedRegex, $cpf)) {
+            return $cpf;
+        }
+
+        $cpf = preg_replace('/\D/', '', $cpf);
+
+        return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $cpf);
     }
 
     public static function getService(): UsersService

@@ -65,9 +65,9 @@ $functions = [
         'type'        => 'read',
         'ajax'          => true,
     ],
-    'local_certificate_management_find_history_certificate' => [
+    'local_certificate_management_get_history_certificate' => [
         'classname'   => history::class,
-        'methodname'  => 'find_grade_history',
+        'methodname'  => 'get_grade_history',
         'description' => 'Find history of grade',
         'type'        => 'read',
         'ajax'          => true,
@@ -89,8 +89,8 @@ $services = [
             'local_certificate_management_retrieve_templates',
             'local_certificate_management_issue_certificate',
             'local_certificate_management_get_certificate_url',
-//            'local_certificate_management_find_history_certificate',
-//            'local_certificate_management_issue_history_certificate',
+            'local_certificate_management_get_history_certificate',
+            'local_certificate_management_issue_history_certificate',
         ],
         'enabled' => 1,
         'restrictedusers' => 0,
