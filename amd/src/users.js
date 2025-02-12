@@ -92,7 +92,7 @@ const issueHistory = async root => {
         modal.getRoot().find('.btn.issue').on('click', async event => {
             const params = await getParams(root);
 
-            await issueHistoryCall(params, userId, userFullName, modal);
+            await issueHistoryCall(params, userId, userFullName, modal, root);
         });
 
         await modal.show();
@@ -110,13 +110,15 @@ const regenHistory = async (root, event) => {
 
     modal.setFooter(await Templates.render('local_certificate_management/components/modal/modal_footer_regen_history', {}));
 
+    modal.getRoot().find('.btn.regen').off();
     modal.getRoot().find('.btn.regen').on('click', async event => {
         const params = await getParams(root);
 
 
-        await issueHistoryCall(params, userId, userFullName, modal);
+        await issueHistoryCall(params, userId, userFullName, modal, root);
     });
 
+    modal.getRoot().find('.btn.see').off();
     modal.getRoot().find('.btn.see').on('click', async event => {
         const params = await getParams(root);
 
@@ -139,7 +141,7 @@ const regenHistory = async (root, event) => {
     await modal.show();
 }
 
-const issueHistoryCall = async (params, userId, userFullName, modal) => {
+const issueHistoryCall = async (params, userId, userFullName, modal, root) => {
     Repository.issueHistory({
         courseId: Number(params.courseId),
         userId: Number(userId),
@@ -154,7 +156,8 @@ const issueHistoryCall = async (params, userId, userFullName, modal) => {
             show: true,
             isVerticallyCentered: true
         });
-    }).catch(async () => {
+        await resetAndReload(root);
+    }).catch(async (error) => {
         modal.destroy();
         await ModalDefault.create({
             title: await getString('modal_history_issued_with_error_title', 'local_certificate_management'),
@@ -185,11 +188,12 @@ const issueCertificate = async root => {
         });
 
         modal.setFooter(await Templates.render('local_certificate_management/components/modal/modal_footer_issue', {}));
+        modal.getRoot().find('.btn.issue').off();
         modal.getRoot().find('.btn.issue').on('click', async event => {
             const selectValue = modal.getRoot().find('.chose-template').val();
             const params = await getParams(root);
 
-            await issueCertificateCall(selectValue, params, userId, userFullName, modal);
+            await issueCertificateCall(selectValue, params, userId, userFullName, modal, root);
         });
 
         await modal.show();
@@ -207,16 +211,16 @@ const regenCertificate = async (root, event) => {
     });
 
     modal.setFooter(await Templates.render('local_certificate_management/components/modal/modal_footer_regen', {}));
-
+    modal.getRoot().find('.btn.regen').off();
     modal.getRoot().find('.btn.regen').on('click', async event => {
         const selectValue = modal.getRoot().find('.chose-template').val();
 
         const params = await getParams(root);
 
 
-        await issueCertificateCall(selectValue, params, userId, userFullName, modal);
+        await issueCertificateCall(selectValue, params, userId, userFullName, modal, root);
     });
-
+    modal.getRoot().find('.btn.see').off();
     modal.getRoot().find('.btn.see').on('click', async event => {
         const params = await getParams(root);
 
@@ -239,7 +243,7 @@ const regenCertificate = async (root, event) => {
     await modal.show();
 }
 
-const issueCertificateCall = async (selectValue, params, userId, userFullName, modal) => {
+const issueCertificateCall = async (selectValue, params, userId, userFullName, modal, root) => {
     if(!await validateSelectValue(selectValue)) {
         return;
     }
@@ -260,6 +264,7 @@ const issueCertificateCall = async (selectValue, params, userId, userFullName, m
             show: true,
             isVerticallyCentered: true
         });
+        await resetAndReload(root);
     }).catch(async () => {
         modal.destroy();
         await ModalDefault.create({
@@ -283,6 +288,11 @@ const validateSelectValue = async (selectValue) => {
     });
 
     return false;
+}
+
+const resetAndReload = async root => {
+    root.attr('data-page', 1);
+    await loadUsers(root);
 }
 
 const init = async root => {

@@ -86,6 +86,11 @@ class UsersService
             $userId,
             $courseId
         );
+
+        if(empty($certificate)) {
+            return false;
+        }
+
         return !!PdfService::getService()->getHistoryGradeUrl(
             $certificate->id,
             $userFullName
