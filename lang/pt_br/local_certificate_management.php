@@ -72,6 +72,9 @@ $string['modal_history_issued_with_error_title'] = 'Erro ao tentar emitir o hist
 $string['modal_history_issued_with_error_body'] = 'Houve um erro ao tentar emitir o histórico para o aluno {$a}';
 $string['regen_history'] = 'Este usuário ja possui um histórico. Você pode visualizar ou apagar!';
 $string['modal_regen_history'] = 'Emitir Histórico Novamente';
+$string['history_available'] = 'Seu histórico está disponível!';
+$string['history_body_message'] = 'Olá {$a->name},<br /><br />Seu histórico está disponível! Você o encontrara aqui:
+<a href="{$a->url}">Meu Histórico</a>';
 
 
 

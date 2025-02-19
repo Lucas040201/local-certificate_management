@@ -89,7 +89,7 @@ SQL;
             muid.data AS document
         from {{$this->table}} mu
         LEFT JOIN {user_info_data} muid ON muid.userid = mu.id
-        LEFT JOIN {user_info_field} muif ON muif.id = muid.fieldid AND muif.shortname = 'documento'
+        LEFT JOIN {user_info_field} muif ON muif.id = muid.fieldid AND muif.shortname = 'cpf'
         where mu.id = :userid
 SQL;
 

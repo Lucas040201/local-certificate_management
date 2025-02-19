@@ -31,7 +31,9 @@ use core\output\renderer_base;
 class certificate implements renderable, templatable
 {
     public function __construct(
-        private array $grade
+        private array $grade,
+        private string $courseShortname,
+        private string $courseName,
     )
     {
     }
@@ -39,7 +41,9 @@ class certificate implements renderable, templatable
     public function export_for_template(renderer_base $output): array
     {
         return [
-            ...$this->grade
+            ...$this->grade,
+            'shortName' => $this->courseShortname,
+            'couseName' => $this->courseName,
         ];
     }
 }

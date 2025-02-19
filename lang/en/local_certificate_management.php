@@ -73,3 +73,6 @@ $string['modal_history_issued_with_error_title'] = 'An error occurred while tryi
 $string['modal_history_issued_with_error_body'] = 'There was an error while trying to issue the history for student {$a}';
 $string['regen_history'] = 'This user already has a history. You can view or delete it!';
 $string['modal_regen_history'] = 'Reissue History';
+$string['history_available'] = 'Your history is available!';
+$string['history_body_message'] = 'Hi {$a->name},<br /><br />Your history is available! You can find it here:
+<a href="{$a->url}">My History</a>';

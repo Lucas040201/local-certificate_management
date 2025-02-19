@@ -52,7 +52,11 @@ class renderer extends plugin_renderer_base
 
     public function certificate(certificate $certificate): bool|string
     {
-        return $this->render_from_template('local_certificate_management/components/certificate/grade_certificate', $certificate->export_for_template($this));
+        $context = $certificate->export_for_template($this);
+        if (str_contains(strtolower($context['shortName']), 'aga')) {
+            return $this->render_from_template('local_certificate_management/components/certificate/grade_certificate_agent', $context);
+        }
+        return $this->render_from_template('local_certificate_management/components/certificate/grade_certificate', $context);
     }
 
     private function getContext(templatable $template): array

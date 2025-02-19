@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 
-$plugin->version = 2025021102;
+$plugin->version = 2025021900;
 $plugin->requires     = 2022041900.00;
 $plugin->component = 'local_certificate_management';
 $plugin->maturity = MATURITY_STABLE;

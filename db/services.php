@@ -15,13 +15,12 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Languages configuration for the block_class_material plugin.
+ * Version metadata for the local_manage_enrollments plugin.
  *
- * @package   block_class_material
- * @copyright 2024, Lucas Mendes {@link https://www.lucasmendesdev.com.br}
+ * @package   local_certificate_management
+ * @copyright 2025 Lucas Mendes <lucas.mendes.dev@outlook.com>
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 
 use local_certificate_management\external\course;
 use local_certificate_management\external\user;

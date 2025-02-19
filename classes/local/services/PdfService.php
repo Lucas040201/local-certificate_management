@@ -68,10 +68,10 @@ class PdfService
         $fileName = str_replace(' ', '_', strtolower($gradeInfo['fullname'])) . '_' . $issueId;
 
         $file = $this->generateFile($issueId, $fileName, $output);
-        return $this->getFileUrl($file, $fileName, $issueId);
+        return [$this->getFileUrl($file, $fileName, $issueId), $file];
     }
 
-    private function getFileUrl(stored_file $file, string $fileName, int $issueId): string
+    private function getFileUrl(stored_file $file, string $fileName, int $issueId): moodle_url
     {
         return moodle_url::make_pluginfile_url(
             $file->get_contextid(),
@@ -80,7 +80,7 @@ class PdfService
             $issueId,
             $file->get_filepath(),
             $fileName . '.pdf'
-        )->out();
+        );
     }
 
     private function generateFile(int $issueId, string $fileName, string $fileContents): \stored_file
@@ -107,7 +107,8 @@ class PdfService
             $userId,
             $courseId,
         );
-        $page = new certificate($grade);
+        $course = get_course($courseId);
+        $page = new certificate($grade, $course->shortname, $course->fullname);
         return [$output->certificate($page), $grade];
     }
 
@@ -145,7 +146,7 @@ class PdfService
             return '';
         }
 
-        return $this->getFileUrl($file, $fileName, $issueId);
+        return $this->getFileUrl($file, $fileName, $issueId)->out();
     }
 
     public static function getService(): PdfService

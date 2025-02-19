@@ -34,14 +34,20 @@ class HistoryService
 
         $pdfService->deleteFile($certificate->id);
 
-        $historyUrl = $pdfService->generateGradePdf(
+        list($historyUrl, $file) = $pdfService->generateGradePdf(
             $userId,
             $courseId,
             $certificate->id
         );
 
+        NotificationService::getService()->sendHistoryNotification([
+            'userId' => $userId,
+            'courseId' => $courseId,
+            'history' => $historyUrl,
+        ], $file);
+
         return [
-            'history' => $historyUrl
+            'history' => $historyUrl->out()
         ];
     }
 
