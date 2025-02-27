@@ -64,16 +64,32 @@ SQL;
     {
         $sql = <<<SQL
         SELECT 
-            ccc.id AS criterio_id, 
-            COALESCE(gg.finalgrade, 0) AS grade, 
-            gg.userid
-        FROM {course_completion_criteria} ccc
-        JOIN {course_modules} cm ON ccc.moduleinstance = cm.instance
-        JOIN {modules} m ON cm.module = m.id
-        LEFT JOIN {grade_items} gi ON gi.iteminstance = cm.instance AND gi.itemmodule = m.name
-        LEFT JOIN {grade_grades} gg ON gi.id = gg.itemid AND (gg.userid = :userid OR gg.userid IS NULL)
-        WHERE ccc.course = :courseid
-          AND ccc.criteriatype = 4;
+            cm.id AS coursemoduleid,
+            q.id AS quizid,
+            q.name AS quizname,
+            q.intro AS quizintro,
+            q.timeopen AS quiztimeopen,
+            q.timeclose AS quiztimeclose,
+            gg.finalgrade AS grade,
+            gg.rawgrademax AS grademax
+        FROM 
+            {course_completion_criteria} ccc
+        JOIN 
+            {course_modules} cm ON ccc.moduleinstance = cm.id
+        JOIN 
+            {modules} m ON cm.module = m.id
+        JOIN 
+            mdl_quiz q ON cm.instance = q.id
+        LEFT JOIN 
+            {{$this->table}} gi ON gi.iteminstance = q.id AND gi.itemmodule = 'quiz' AND gi.courseid = ccc.course
+        LEFT JOIN 
+            {grade_grades} gg ON gg.itemid = gi.id AND gg.userid = :userid
+        WHERE 
+            ccc.course = :courseid
+            AND ccc.criteriatype = 4
+            AND m.name = 'quiz'
+        ORDER BY 
+            cm.added ASC
 SQL;
 
         $params = [
