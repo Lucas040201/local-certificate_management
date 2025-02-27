@@ -102,11 +102,12 @@ class UsersService
         int $courseId
     )
     {
-        $grades = $this->gradeRepository->getUserGrade($courseId, $userId);
+        $grades = $this->gradeRepository->getUserGradeFromCourseCompletionCriteria($courseId, $userId);
         $activity1 = $grades[0]->grade ?? 0;
         $activity2 = $grades[1]->grade ?? 0;
         $activity3 = $grades[2]->grade ?? 0;
         $activity4 = $grades[3]->grade ?? 0;
+        $activity5 = $grades[4]->grade ?? 0;
 
         $total = array_reduce($grades, function ($current, $next) {
             return $current + $next->grade;
@@ -124,6 +125,7 @@ class UsersService
             'grade2' => ceil($activity2),
             'grade3' => ceil($activity3),
             'grade4' => ceil($activity4),
+            'grade5' => ceil($activity5),
             'average' => $average,
             'fullname' => $fullname,
             'document' => $this->formatCpfDocument($user->document)

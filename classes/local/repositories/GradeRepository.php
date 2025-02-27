@@ -57,4 +57,31 @@ SQL;
 
     }
 
+    public function getUserGradeFromCourseCompletionCriteria(
+        int $courseId,
+        int $userId
+    )
+    {
+        $sql = <<<SQL
+        SELECT 
+            ccc.id AS criterio_id, 
+            COALESCE(gg.finalgrade, 0) AS grade, 
+            gg.userid
+        FROM {course_completion_criteria} ccc
+        JOIN {course_modules} cm ON ccc.moduleinstance = cm.instance
+        JOIN {modules} m ON cm.module = m.id
+        LEFT JOIN {grade_items} gi ON gi.iteminstance = cm.instance AND gi.itemmodule = m.name
+        LEFT JOIN {grade_grades} gg ON gi.id = gg.itemid AND (gg.userid = :userid OR gg.userid IS NULL)
+        WHERE ccc.course = :courseid
+          AND ccc.criteriatype = 4;
+SQL;
+
+        $params = [
+            'courseid' => $courseId,
+            'userid' => $userId,
+        ];
+
+        return array_values($this->builder->get_records_sql($sql, $params));
+    }
+
 }
