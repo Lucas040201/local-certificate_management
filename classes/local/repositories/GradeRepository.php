@@ -79,7 +79,7 @@ SQL;
         JOIN 
             {modules} m ON cm.module = m.id
         JOIN 
-            mdl_quiz q ON cm.instance = q.id
+            {quiz} q ON cm.instance = q.id
         LEFT JOIN 
             {{$this->table}} gi ON gi.iteminstance = q.id AND gi.itemmodule = 'quiz' AND gi.courseid = ccc.course
         LEFT JOIN 
